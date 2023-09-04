@@ -1,4 +1,4 @@
-module github/willf/public_suffixes.go
+module github/willf/publicsuffix
 
 go 1.21.0
 

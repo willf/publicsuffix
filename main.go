@@ -10,12 +10,12 @@ import (
 )
 
 type Result struct {
-	Name                    string `json:"name"`
-	TopLevel                string `json:"tld"`
-	SecondLevel             string `json:"sld"`
-	ThirdLevel              string `json:"trd"`
-	SecondLevelPlusTopLevel string `json:"base"`
-	Error                   error  `json:"error"`
+	Name        string `json:"name"`
+	TopLevel    string `json:"tld"`
+	SecondLevel string `json:"sld"`
+	ThirdLevel  string `json:"trd"`
+	BasicDomain string `json:"base"`
+	Error       error  `json:"error"`
 }
 
 func main() {
@@ -40,7 +40,7 @@ func main() {
 		trd := parsed.TRD
 		sldPlusTld := sld + "." + tld
 
-		result := Result{Name: domainName, SecondLevelPlusTopLevel: sldPlusTld, TopLevel: tld, SecondLevel: sld, ThirdLevel: trd, Error: err}
+		result := Result{Name: domainName, BasicDomain: sldPlusTld, TopLevel: tld, SecondLevel: sld, ThirdLevel: trd, Error: err}
 		jsonData, _ := json.Marshal(result)
 		fmt.Println(string(jsonData))
 	}

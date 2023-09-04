@@ -4,9 +4,10 @@ Simple Go command that prints domain information using the [Public Suffix List](
 
 ## Installation
 
-```
-go get github.com/willf/publicsuffix
-```
+Assuming you have Go installed and your `$GOPATH` set:
+
+1. Clone the repository
+2. Run `go install`
 
 ## Usage
 

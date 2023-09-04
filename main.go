@@ -12,10 +12,10 @@ import (
 
 type Result struct {
 	Input       string `json:"input"`
+	BasicDomain string `json:"base"`
 	TopLevel    string `json:"tld"`
 	SecondLevel string `json:"sld"`
 	ThirdLevel  string `json:"trd"`
-	BasicDomain string `json:"base"`
 	Error       error  `json:"error"`
 }
 

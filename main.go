@@ -4,13 +4,14 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"os"
 
 	"github.com/weppos/publicsuffix-go/publicsuffix"
 )
 
 type Result struct {
-	Name        string `json:"name"`
+	Input       string `json:"input"`
 	TopLevel    string `json:"tld"`
 	SecondLevel string `json:"sld"`
 	ThirdLevel  string `json:"trd"`
@@ -27,10 +28,18 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for scanner.Scan() {
-		domainName := scanner.Text()
+		input := scanner.Text()
+		domainName := input
+
+		// Parse the input as a URL
+		u, err := url.Parse(domainName)
+		if err == nil && u.Host != "" {
+			domainName = u.Host
+		}
+
 		parsed, err := publicsuffix.Parse(domainName)
 		if err != nil {
-			result := Result{Name: domainName, Error: err}
+			result := Result{Input: domainName, Error: err}
 			jsonData, _ := json.Marshal(result)
 			fmt.Println(string(jsonData))
 			continue
@@ -40,7 +49,7 @@ func main() {
 		trd := parsed.TRD
 		sldPlusTld := sld + "." + tld
 
-		result := Result{Name: domainName, BasicDomain: sldPlusTld, TopLevel: tld, SecondLevel: sld, ThirdLevel: trd, Error: err}
+		result := Result{Input: input, BasicDomain: sldPlusTld, TopLevel: tld, SecondLevel: sld, ThirdLevel: trd, Error: err}
 		jsonData, _ := json.Marshal(result)
 		fmt.Println(string(jsonData))
 	}

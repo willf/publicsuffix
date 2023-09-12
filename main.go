@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"strings"
 
 	"github.com/weppos/publicsuffix-go/publicsuffix"
 )
@@ -35,6 +36,11 @@ func main() {
 		u, err := url.Parse(domainName)
 		if err == nil && u.Host != "" {
 			domainName = u.Host
+		} else {
+			u, err = url.Parse("https://" + domainName)
+			if err == nil && u.Host != "" {
+				domainName = u.Host
+			}
 		}
 
 		parsed, err := publicsuffix.Parse(domainName)
@@ -44,7 +50,7 @@ func main() {
 			fmt.Println(string(jsonData))
 			continue
 		}
-		tld := parsed.TLD
+		tld := strings.Trim(parsed.TLD, "/")
 		sld := parsed.SLD
 		trd := parsed.TRD
 		sldPlusTld := sld + "." + tld

@@ -89,15 +89,15 @@ func Parse(input string) (result Result) {
 func main() {
 	if len(os.Args) >= 2 {
 		fmt.Println("Returns parsed domains using the Public Suffix List.\n\nUsage:\n\tcat domains.txt | publicsuffix")
-		os.Exit(0)
-	}
+	} else {
 
-	scanner := bufio.NewScanner(os.Stdin)
+		scanner := bufio.NewScanner(os.Stdin)
 
-	for scanner.Scan() {
-		input := scanner.Text()
-		result := Parse(input)
-		jsonData, _ := json.Marshal(result)
-		fmt.Println(string(jsonData))
+		for scanner.Scan() {
+			input := scanner.Text()
+			result := Parse(input)
+			jsonData, _ := json.Marshal(result)
+			fmt.Println(string(jsonData))
+		}
 	}
 }

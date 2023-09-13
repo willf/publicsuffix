@@ -30,6 +30,14 @@ type Result struct {
 	ErrorMessage NullableString `json:"error"`
 }
 
+func RFC3490Check(str string) (ok bool) {
+	// make sure there are no extraneous things in the tld or the sld
+	// regular expression for tld is: ^[a-z0-9\-]+$ more or less ...
+	// can't start or end with a dash
+	re := regexp.MustCompile(`^[a-zA-Z0-9-]{1,63}$`)
+	return len(str) >= 1 && re.MatchString(str) && str[:1] != "-" && str[len(str)-1:] != "-"
+}
+
 func FinalCheck(tld string, sld string, trd string) (err error) {
 	if tld == "" {
 		return errors.New("tld is empty")
@@ -39,18 +47,15 @@ func FinalCheck(tld string, sld string, trd string) (err error) {
 	}
 	// make sure there are no extraneous things in the tld or the sld
 	// regular expression for tld is: ^[a-z0-9\-]+$
-	regexTld := regexp.MustCompile(`^[a-z0-9\-\.]+$`)
-	if !regexTld.MatchString(tld) {
+	if !RFC3490Check(tld) {
 		return errors.New("tld contains invalid characters")
 	}
 	// regular expression for sld is: ^[a-z0-9\-]+$
-	regexSld := regexp.MustCompile(`^[a-z0-9\-]+$`)
-	if !regexSld.MatchString(sld) {
+	if !RFC3490Check(sld) {
 		return errors.New("sld contains invalid characters")
 	}
 	// regular expression for trd is: ^[a-z0-9\-]+$
-	regexTrd := regexp.MustCompile(`^[a-z0-9\-]+$`)
-	if trd != "" && !regexTrd.MatchString(trd) {
+	if trd != "" && !RFC3490Check(trd) {
 		return errors.New("trd contains invalid characters")
 	}
 	return nil

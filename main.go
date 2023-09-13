@@ -35,7 +35,9 @@ func RFC3490Check(str string) (ok bool) {
 	// regular expression for tld is: ^[a-z0-9\-]+$ more or less ...
 	// can't start or end with a dash
 	re := regexp.MustCompile(`^[a-zA-Z0-9-]{1,63}$`)
-	return len(str) >= 1 && re.MatchString(str) && str[:1] != "-" && str[len(str)-1:] != "-"
+	bytes := []byte(str)
+	dash := byte('-')
+	return len(str) >= 1 && re.MatchString(str) && bytes[0] != dash && bytes[len(bytes)-1] != dash
 }
 
 func FinalCheck(tld string, sld string, trd string) (err error) {
@@ -48,15 +50,15 @@ func FinalCheck(tld string, sld string, trd string) (err error) {
 	// make sure there are no extraneous things in the tld or the sld
 	// regular expression for tld is: ^[a-z0-9\-]+$
 	if !RFC3490Check(tld) {
-		return errors.New("tld contains invalid characters")
+		return errors.New("top level domain contains invalid characters")
 	}
 	// regular expression for sld is: ^[a-z0-9\-]+$
 	if !RFC3490Check(sld) {
-		return errors.New("sld contains invalid characters")
+		return errors.New("second level domain contains invalid characters")
 	}
 	// regular expression for trd is: ^[a-z0-9\-]+$
 	if trd != "" && !RFC3490Check(trd) {
-		return errors.New("trd contains invalid characters")
+		return errors.New("third level domain contains invalid characters")
 	}
 	return nil
 }

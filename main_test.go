@@ -89,6 +89,21 @@ func TestParse(t *testing.T) {
 	if actual != expected {
 		t.Errorf("Expected %v, but got %v", expected, actual)
 	}
+
+	input = "βλαμπτω.com"
+	expected = Result{
+		Input:        input,
+		BasicDomain:  "",
+		TopLevel:     "",
+		SecondLevel:  "",
+		ThirdLevel:   "",
+		ErrorMessage: NullableString("second level domain contains invalid characters"),
+	}
+	actual = Parse(input)
+
+	if actual != expected {
+		t.Errorf("Expected %v, but got %v", expected, actual)
+	}
 }
 
 func TestMain(t *testing.T) {

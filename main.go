@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"net/url"
 	"os"
-	"regexp"
 
 	"github.com/weppos/publicsuffix-go/publicsuffix"
 )
@@ -30,14 +29,32 @@ type Result struct {
 	ErrorMessage NullableString `json:"error"`
 }
 
+func byteIsDigit(b byte) bool {
+	return b >= '0' && b <= '9'
+}
+
+func byteIsLowercase(b byte) bool {
+	return b >= 'a' && b <= 'z'
+}
+
+func byteIsUppercase(b byte) bool {
+	return b >= 'A' && b <= 'Z'
+}
+
 func RFC3490Check(str string) (ok bool) {
-	// make sure there are no extraneous things in the tld or the sld
-	// regular expression for tld is: ^[a-z0-9\-]+$ more or less ...
-	// can't start or end with a dash
-	re := regexp.MustCompile(`^[a-zA-Z0-9-]{1,63}$`)
 	bytes := []byte(str)
-	dash := byte('-')
-	return len(str) >= 1 && re.MatchString(str) && bytes[0] != dash && bytes[len(bytes)-1] != dash
+	const dash = byte('-')
+	size := len(bytes)
+	if size < 1 || size > 63 || bytes[0] == dash || bytes[size-1] == dash {
+		return false
+	}
+	for i := 0; i < size; i++ {
+		c := bytes[i]
+		if !byteIsDigit(c) && !byteIsLowercase(c) && !byteIsUppercase(c) && c != dash {
+			return false
+		}
+	}
+	return true
 }
 
 func FinalCheck(tld string, sld string, trd string) (err error) {

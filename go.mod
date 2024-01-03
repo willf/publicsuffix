@@ -1,6 +1,6 @@
 module github/willf/publicsuffix
 
-go 1.21.0
+go 1.21
 
 require github.com/weppos/publicsuffix-go v0.30.1
 

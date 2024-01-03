@@ -1,3 +1,5 @@
+![status badge](https://github.com/willf/publicsuffix/actions/workflows/go.yml/badge.svg)
+
 #Public Suffix
 
 Simple Go command that prints domain information using the [Public Suffix List](https://publicsuffix.org/).
